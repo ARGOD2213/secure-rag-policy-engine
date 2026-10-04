@@ -49,12 +49,31 @@ public class SeedDataLoader implements ApplicationRunner {
         }
         Resource[] resources = new PathMatchingResourcePatternResolver().getResources(config.location());
         Arrays.sort(resources, Comparator.comparing(Resource::getFilename));
+        int seeded = 0;
         for (Resource resource : resources) {
             SeedFile seed = parse(resource.getContentAsString(StandardCharsets.UTF_8));
-            ingestion.ingest(new DocumentIngestionService.IngestCommand(seed.title(), seed.audience(),
-                    resource.getFilename(), "text/markdown", seed.body().getBytes(StandardCharsets.UTF_8), "seed"));
+            try {
+                ingestion.ingest(new DocumentIngestionService.IngestCommand(seed.title(), seed.audience(),
+                        resource.getFilename(), "text/markdown", seed.body().getBytes(StandardCharsets.UTF_8), "seed"));
+                seeded++;
+            } catch (RuntimeException e) {
+                // Keep the API up (health, auth, docs) even if the embedding provider is misconfigured;
+                // seeding is retried on the next start because nothing was committed.
+                log.error("SEEDING FAILED for '{}' - check the embedding provider settings "
+                        + "(OPENAI_API_KEY / OPENAI_BASE_URL / OPENAI_EMBEDDING_MODEL / EMBEDDING_DIMENSIONS). Cause: {}",
+                        seed.title(), rootCauseMessage(e));
+                return;
+            }
         }
-        log.info("Seeded {} sample policy documents", resources.length);
+        log.info("Seeded {} sample policy documents", seeded);
+    }
+
+    private static String rootCauseMessage(Throwable e) {
+        Throwable root = e;
+        while (root.getCause() != null && root.getCause() != root) {
+            root = root.getCause();
+        }
+        return root.getClass().getSimpleName() + ": " + root.getMessage();
     }
 
     static SeedFile parse(String raw) {

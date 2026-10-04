@@ -1,13 +1,19 @@
 name: Deploy to AWS (ECS Fargate)
 
-# Manual deploy. Requires repository variables AWS_REGION, AWS_ROLE_ARN, ECR_REPOSITORY,
-# ECS_CLUSTER, ECS_SERVICE and an IAM role trusted for GitHub OIDC. See deploy/aws/README.md.
+# Builds the image, pushes it to ECR and rolls the ECS service.
+# Prerequisite: infrastructure created with infra/aws (Terraform). Then set these repository
+# variables (Settings -> Secrets and variables -> Actions -> Variables):
+#   AWS_REGION, AWS_ROLE_ARN, ECR_REPOSITORY, ECS_CLUSTER, ECS_SERVICE, ECS_TASK_FAMILY
 on:
   workflow_dispatch:
 
 permissions:
   id-token: write
   contents: read
+
+concurrency:
+  group: deploy-aws
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -32,11 +38,16 @@ jobs:
           docker push "$IMAGE"
           echo "uri=$IMAGE" >> "$GITHUB_OUTPUT"
 
+      - name: Download current task definition
+        run: |
+          aws ecs describe-task-definition --task-definition "${{ vars.ECS_TASK_FAMILY }}" \
+            --query taskDefinition > task-definition.json
+
       - id: taskdef
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: deploy/aws/ecs-task-definition.json
-          container-name: policy-rag
+          task-definition: task-definition.json
+          container-name: app
           image: ${{ steps.image.outputs.uri }}
 
       - uses: aws-actions/amazon-ecs-deploy-task-definition@v2

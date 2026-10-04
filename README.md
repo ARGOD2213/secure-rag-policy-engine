@@ -5,7 +5,7 @@
 A retrieval-augmented generation (RAG) API that answers questions about company policy documents.
 Answers come **only from cited sources**, and users can **only retrieve documents their role allows**.
 
-**Stack:** Java 21 · Spring Boot 3.5 · Spring AI 1.1 · PostgreSQL + pgvector · Spring Security (JWT) · Flyway · Testcontainers · Docker · AWS (ECS Fargate + RDS)
+**Stack:** Java 21 · Spring Boot 3.5 · Spring AI 1.1 · PostgreSQL + pgvector · Spring Security (JWT) · Flyway · Testcontainers · Docker · AWS (ECS Fargate, RDS, ALB, Secrets Manager) · Terraform
 
 ---
 
@@ -194,7 +194,7 @@ src/main/resources
 ├── db/migration Flyway migrations
 ├── seed/        Sample policy documents (fictional company)
 └── eval/        Labelled evaluation set
-deploy/aws/      ECS Fargate task definition + deployment guide
+infra/aws/       Terraform for AWS (VPC, ALB, ECS Fargate, RDS, Secrets Manager, ECR, OIDC)
 ```
 
 ## Deploying
@@ -202,10 +202,11 @@ deploy/aws/      ECS Fargate task definition + deployment guide
 - **Free public demo:** Render + Neon. See [`docs/deploy-render-neon.md`](docs/deploy-render-neon.md) and `render.yaml`.
 - **AWS:** see below.
 
-### AWS
+### AWS (Terraform)
 
-See [`deploy/aws/README.md`](deploy/aws/README.md). The target is ECS Fargate behind an ALB, with RDS for PostgreSQL
-(pgvector) and Secrets Manager for credentials. A manual GitHub Actions workflow builds the image, pushes it to ECR and rolls the service.
+[`infra/aws`](infra/aws) provisions the full stack as code: VPC, an Application Load Balancer, ECS Fargate, RDS PostgreSQL with pgvector,
+Secrets Manager, ECR, CloudWatch, and a GitHub OIDC role. The **Deploy to AWS** GitHub Actions workflow builds the image, pushes it to ECR
+and rolls the ECS service, with no long-lived AWS keys stored in GitHub. See [`infra/aws/README.md`](infra/aws/README.md) for the diagram, cost notes and steps.
 
 ## Configuration
 

@@ -1,0 +1,47 @@
+# Local stack: PostgreSQL + pgvector and the API.
+#   OpenAI:  cp .env.example .env  (set OPENAI_API_KEY)  && docker compose up --build
+#   Ollama:  docker compose --profile ollama up --build   (with AI_PROVIDER=ollama, EMBEDDING_DIMENSIONS=768 in .env)
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: policydocs
+      POSTGRES_USER: policydocs
+      POSTGRES_PASSWORD: policydocs
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U policydocs -d policydocs"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/policydocs
+      DB_USERNAME: policydocs
+      DB_PASSWORD: policydocs
+      OLLAMA_BASE_URL: http://ollama:11434
+
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["ollama"]
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+
+volumes:
+  pgdata:
+  ollama:

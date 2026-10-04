@@ -1,0 +1,13 @@
+spring:
+  ai:
+    model:
+      chat: none
+      embedding: none
+    vectorstore:
+      pgvector:
+        dimensions: 512
+app:
+  security:
+    jwt-secret: test-secret-test-secret-test-secret-0123456789
+  rag:
+    similarity-threshold: 0.1

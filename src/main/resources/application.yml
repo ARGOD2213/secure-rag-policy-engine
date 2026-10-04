@@ -1,0 +1,93 @@
+spring:
+  application:
+    name: secure-rag-policy-engine
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/policydocs}
+    username: ${DB_USERNAME:policydocs}
+    password: ${DB_PASSWORD:policydocs}
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  ai:
+    # Pick the model provider: "openai" (default) or "ollama" (local, free).
+    model:
+      chat: ${AI_PROVIDER:openai}
+      embedding: ${AI_PROVIDER:openai}
+      image: none
+      audio:
+        speech: none
+        transcription: none
+      moderation: none
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      chat:
+        options:
+          model: ${OPENAI_CHAT_MODEL:gpt-4o-mini}
+          temperature: 0.0
+      embedding:
+        options:
+          model: ${OPENAI_EMBEDDING_MODEL:text-embedding-3-small}
+    ollama:
+      base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+      init:
+        pull-model-strategy: when_missing
+      chat:
+        options:
+          model: ${OLLAMA_CHAT_MODEL:llama3.1:8b}
+          temperature: 0.0
+      embedding:
+        options:
+          model: ${OLLAMA_EMBEDDING_MODEL:nomic-embed-text}
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        # 1536 for text-embedding-3-small, 768 for nomic-embed-text
+        dimensions: ${EMBEDDING_DIMENSIONS:1536}
+
+app:
+  security:
+    jwt-secret: ${JWT_SECRET:change-me-in-production-this-is-only-a-local-dev-secret}
+    issuer: secure-rag-policy-engine
+    token-ttl: 1h
+    # Demo users for local development only. Override or disable in real deployments.
+    users:
+      - username: alice
+        password: ${DEMO_PASSWORD:password}
+        roles: [EMPLOYEE]
+      - username: hana
+        password: ${DEMO_PASSWORD:password}
+        roles: [EMPLOYEE, HR]
+      - username: felix
+        password: ${DEMO_PASSWORD:password}
+        roles: [EMPLOYEE, FINANCE]
+      - username: admin
+        password: ${DEMO_PASSWORD:password}
+        roles: [ADMIN]
+  rag:
+    top-k: 5
+    max-top-k: 10
+    similarity-threshold: ${RAG_SIMILARITY_THRESHOLD:0.3}
+  ingestion:
+    chunk-size-tokens: 350
+  seed:
+    enabled: ${SEED_ENABLED:true}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

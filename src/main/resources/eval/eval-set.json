@@ -1,0 +1,130 @@
+[
+  {
+    "id": "remote-days",
+    "question": "How many days per week can I work remotely?",
+    "roles": ["EMPLOYEE"],
+    "expectedTitle": "Remote Work Policy",
+    "expectedKeywords": ["3 days"],
+    "answerable": true
+  },
+  {
+    "id": "home-office-stipend",
+    "question": "What is the home office stipend amount?",
+    "roles": ["EMPLOYEE"],
+    "expectedTitle": "Remote Work Policy",
+    "expectedKeywords": ["$500"],
+    "answerable": true
+  },
+  {
+    "id": "work-abroad",
+    "question": "How many working days per year can I work from another country?",
+    "roles": ["EMPLOYEE"],
+    "expectedTitle": "Remote Work Policy",
+    "expectedKeywords": ["20 working days"],
+    "answerable": true
+  },
+  {
+    "id": "expense-deadline",
+    "question": "Within how many days must expense claims be submitted?",
+    "roles": ["EMPLOYEE"],
+    "expectedTitle": "Expense Reimbursement Policy",
+    "expectedKeywords": ["30 days"],
+    "answerable": true
+  },
+  {
+    "id": "meal-allowance",
+    "question": "What is the daily meal allowance for domestic business travel?",
+    "roles": ["EMPLOYEE"],
+    "expectedTitle": "Expense Reimbursement Policy",
+    "expectedKeywords": ["$75"],
+    "answerable": true
+  },
+  {
+    "id": "password-length",
+    "question": "What is the minimum password length?",
+    "roles": ["EMPLOYEE"],
+    "expectedTitle": "Information Security Policy",
+    "expectedKeywords": ["14 characters"],
+    "answerable": true
+  },
+  {
+    "id": "incident-reporting",
+    "question": "How quickly must a suspected security incident be reported?",
+    "roles": ["EMPLOYEE"],
+    "expectedTitle": "Information Security Policy",
+    "expectedKeywords": ["1 hour"],
+    "answerable": true
+  },
+  {
+    "id": "parental-leave",
+    "question": "How many weeks of paid parental leave do caregivers get?",
+    "roles": ["EMPLOYEE"],
+    "expectedTitle": "Leave and Time Off Policy",
+    "expectedKeywords": ["16 weeks"],
+    "answerable": true
+  },
+  {
+    "id": "pto-carryover",
+    "question": "How many unused PTO days can be carried over into the next year?",
+    "roles": ["EMPLOYEE"],
+    "expectedTitle": "Leave and Time Off Policy",
+    "expectedKeywords": ["5"],
+    "answerable": true
+  },
+  {
+    "id": "privacy-retention-public",
+    "question": "How long is customer account data retained after an account is closed?",
+    "roles": [],
+    "expectedTitle": "Customer Privacy Notice",
+    "expectedKeywords": ["24 months"],
+    "answerable": true
+  },
+  {
+    "id": "salary-band-hr",
+    "question": "What is the salary band for an L3 Senior Engineer?",
+    "roles": ["EMPLOYEE", "HR"],
+    "expectedTitle": "Compensation Bands and Salary Review",
+    "expectedKeywords": ["$135,000"],
+    "answerable": true
+  },
+  {
+    "id": "salary-band-denied-for-employee",
+    "question": "What is the salary band for an L3 Senior Engineer?",
+    "roles": ["EMPLOYEE"],
+    "expectedTitle": null,
+    "expectedKeywords": [],
+    "answerable": false
+  },
+  {
+    "id": "journal-entry-finance",
+    "question": "Which manual journal entries require Financial Controller approval?",
+    "roles": ["EMPLOYEE", "FINANCE"],
+    "expectedTitle": "Quarterly Close Procedure",
+    "expectedKeywords": ["$50,000"],
+    "answerable": true
+  },
+  {
+    "id": "journal-entry-denied-for-hr",
+    "question": "Which manual journal entries require Financial Controller approval?",
+    "roles": ["EMPLOYEE", "HR"],
+    "expectedTitle": null,
+    "expectedKeywords": [],
+    "answerable": false
+  },
+  {
+    "id": "litigation-hold-denied",
+    "question": "Who can release a litigation hold?",
+    "roles": ["EMPLOYEE", "FINANCE"],
+    "expectedTitle": null,
+    "expectedKeywords": [],
+    "answerable": false
+  },
+  {
+    "id": "out-of-scope",
+    "question": "What is the company policy on bringing dogs to the office?",
+    "roles": ["EMPLOYEE"],
+    "expectedTitle": null,
+    "expectedKeywords": [],
+    "answerable": false
+  }
+]

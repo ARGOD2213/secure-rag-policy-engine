@@ -1,0 +1,18 @@
+### Get a token (users: alice=EMPLOYEE, hana=EMPLOYEE+HR, felix=EMPLOYEE+FINANCE, admin=ADMIN)
+POST http://localhost:8080/api/auth/token
+Content-Type: application/json
+
+{"username": "alice", "password": "password"}
+
+> {% client.global.set("token", response.body.accessToken); %}
+
+### Ask a question
+POST http://localhost:8080/api/ask
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"question": "How many days per week can I work remotely?"}
+
+### List documents I can see
+GET http://localhost:8080/api/documents
+Authorization: Bearer {{token}}

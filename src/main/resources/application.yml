@@ -28,6 +28,8 @@ spring:
       moderation: none
     openai:
       api-key: ${OPENAI_API_KEY:}
+      # Any OpenAI-compatible API, e.g. https://openrouter.ai/api for OpenRouter
+      base-url: ${OPENAI_BASE_URL:https://api.openai.com}
       chat:
         options:
           model: ${OPENAI_CHAT_MODEL:gpt-4o-mini}

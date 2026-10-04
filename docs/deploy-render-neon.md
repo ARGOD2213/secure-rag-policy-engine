@@ -38,6 +38,19 @@ and Spring AI creates the `vector_store` table and HNSW index.
 2. **Set a monthly spend limit** under Settings → Limits (e.g. $5). The demo URL is public,
    and every question calls the API.
 
+### Using OpenRouter instead of OpenAI
+OpenRouter speaks the OpenAI API, so the same code works. After the Blueprint is created, change these
+values under the service's **Environment** tab:
+
+| Key | Value |
+|---|---|
+| `OPENAI_API_KEY` | your `sk-or-v1-...` key |
+| `OPENAI_BASE_URL` | `https://openrouter.ai/api` |
+| `OPENAI_CHAT_MODEL` | `openai/gpt-4o-mini` |
+| `OPENAI_EMBEDDING_MODEL` | `openai/text-embedding-3-small` |
+
+Keep `EMBEDDING_DIMENSIONS=1536`. Set a credit limit on the key in the OpenRouter dashboard.
+
 ## 3. Deploy on Render
 
 1. Sign up at <https://render.com> with your GitHub account.

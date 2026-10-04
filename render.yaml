@@ -15,6 +15,14 @@ services:
         value: openai
       - key: EMBEDDING_DIMENSIONS
         value: "1536"
+      # Leave as-is for OpenAI. For OpenRouter set OPENAI_BASE_URL=https://openrouter.ai/api,
+      # OPENAI_CHAT_MODEL=openai/gpt-4o-mini, OPENAI_EMBEDDING_MODEL=openai/text-embedding-3-small
+      - key: OPENAI_BASE_URL
+        value: https://api.openai.com
+      - key: OPENAI_CHAT_MODEL
+        value: gpt-4o-mini
+      - key: OPENAI_EMBEDDING_MODEL
+        value: text-embedding-3-small
       - key: SEED_ENABLED
         value: "true"
       - key: JWT_SECRET

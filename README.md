@@ -212,7 +212,9 @@ See [`deploy/aws/README.md`](deploy/aws/README.md). The target is ECS Fargate be
 | Env var | Default | Purpose |
 |---|---|---|
 | `AI_PROVIDER` | `openai` | `openai` or `ollama` |
-| `OPENAI_API_KEY` | – | Required when using OpenAI |
+| `OPENAI_API_KEY` | – | Required when using OpenAI (or an OpenAI-compatible API) |
+| `OPENAI_BASE_URL` | `https://api.openai.com` | e.g. `https://openrouter.ai/api` for OpenRouter |
+| `OPENAI_CHAT_MODEL` / `OPENAI_EMBEDDING_MODEL` | `gpt-4o-mini` / `text-embedding-3-small` | With OpenRouter: `openai/gpt-4o-mini` / `openai/text-embedding-3-small` |
 | `EMBEDDING_DIMENSIONS` | `1536` | Must match the embedding model (`768` for `nomic-embed-text`) |
 | `DB_URL` / `DB_USERNAME` / `DB_PASSWORD` | local compose values | PostgreSQL connection |
 | `DEMO_PASSWORD` / `ADMIN_PASSWORD` | `password` | Demo user passwords; set a private `ADMIN_PASSWORD` on any public deployment |

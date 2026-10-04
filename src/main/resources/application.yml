@@ -1,3 +1,7 @@
+server:
+  # Render and most PaaS hosts inject PORT
+  port: ${PORT:8080}
+
 spring:
   application:
     name: secure-rag-policy-engine
@@ -67,7 +71,7 @@ app:
         password: ${DEMO_PASSWORD:password}
         roles: [EMPLOYEE, FINANCE]
       - username: admin
-        password: ${DEMO_PASSWORD:password}
+        password: ${ADMIN_PASSWORD:${DEMO_PASSWORD:password}}
         roles: [ADMIN]
   rag:
     top-k: 5

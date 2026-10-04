@@ -20,9 +20,14 @@ services:
 
   app:
     build: .
+    restart: on-failure
     depends_on:
       db:
         condition: service_healthy
+      # Only enforced when the "ollama" profile is active
+      ollama:
+        condition: service_healthy
+        required: false
     ports:
       - "8080:8080"
     env_file:
@@ -41,6 +46,11 @@ services:
       - "11434:11434"
     volumes:
       - ollama:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
 
 volumes:
   pgdata:

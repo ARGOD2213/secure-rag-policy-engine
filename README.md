@@ -47,20 +47,34 @@ Request flow for `POST /api/ask`:
 
 ## Quick start
 
+There are three ways to run it:
+
+| Where | Cost | Guide |
+|---|---|---|
+| Your computer (Docker) | free with Ollama, cents with OpenAI | below |
+| GitHub Codespaces (browser, nothing to install) | free monthly hours | below |
+| Public URL: Render + Neon | free tiers + OpenAI usage | [docs/deploy-render-neon.md](docs/deploy-render-neon.md) |
+
 ### Option A: Docker Compose with OpenAI
 ```bash
 cp .env.example .env            # put your OPENAI_API_KEY in .env
 docker compose up --build
 ```
 
-### Option B: fully local with Ollama (free)
+### Option B: fully local with Ollama (free, no API key)
 ```bash
-cp .env.example .env            # set AI_PROVIDER=ollama and EMBEDDING_DIMENSIONS=768
+cp .env.example .env
+# in .env set: AI_PROVIDER=ollama, EMBEDDING_DIMENSIONS=768, OLLAMA_CHAT_MODEL=llama3.2:3b
 docker compose --profile ollama up --build
 ```
-On first start the app pulls `llama3.1:8b` and `nomic-embed-text` into Ollama, which takes a while.
+The app waits for Ollama to be healthy, then pulls the chat and embedding models on first start.
+That takes a few minutes. `llama3.2:3b` fits a laptop with about 8 GB of RAM; the default `llama3.1:8b` needs more.
 
-### Option C: run from source
+### Option C: GitHub Codespaces
+On GitHub click **Code → Codespaces → Create codespace**. The dev container includes Java 21, Maven
+and Docker. In the terminal run Option A or B, then open the forwarded port 8080.
+
+### Option D: run from source
 ```bash
 docker compose up -d db
 export OPENAI_API_KEY=sk-...
@@ -72,7 +86,7 @@ On first start, nine sample policies for the fictional company *Northwind Labs* 
 
 ## Try it
 
-Demo users (password `password`, local only):
+Demo users (password `password` locally, or `DEMO_PASSWORD`; `admin` uses `ADMIN_PASSWORD` if set):
 
 | User | Roles | Can see |
 |---|---|---|
@@ -183,7 +197,12 @@ src/main/resources
 deploy/aws/      ECS Fargate task definition + deployment guide
 ```
 
-## Deploying to AWS
+## Deploying
+
+- **Free public demo:** Render + Neon. See [`docs/deploy-render-neon.md`](docs/deploy-render-neon.md) and `render.yaml`.
+- **AWS:** see below.
+
+### AWS
 
 See [`deploy/aws/README.md`](deploy/aws/README.md). The target is ECS Fargate behind an ALB, with RDS for PostgreSQL
 (pgvector) and Secrets Manager for credentials. A manual GitHub Actions workflow builds the image, pushes it to ECR and rolls the service.
@@ -196,6 +215,8 @@ See [`deploy/aws/README.md`](deploy/aws/README.md). The target is ECS Fargate be
 | `OPENAI_API_KEY` | – | Required when using OpenAI |
 | `EMBEDDING_DIMENSIONS` | `1536` | Must match the embedding model (`768` for `nomic-embed-text`) |
 | `DB_URL` / `DB_USERNAME` / `DB_PASSWORD` | local compose values | PostgreSQL connection |
+| `DEMO_PASSWORD` / `ADMIN_PASSWORD` | `password` | Demo user passwords; set a private `ADMIN_PASSWORD` on any public deployment |
+| `PORT` | `8080` | HTTP port (set automatically by Render and similar hosts) |
 | `JWT_SECRET` | dev-only value | HS256 signing key, at least 32 chars. **Always override.** |
 | `RAG_SIMILARITY_THRESHOLD` | `0.3` | Minimum cosine similarity for retrieved chunks |
 | `SEED_ENABLED` | `true` | Load the sample documents on first start |

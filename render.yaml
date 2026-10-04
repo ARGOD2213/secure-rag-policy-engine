@@ -1,0 +1,34 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# Database: use a free Neon or Supabase Postgres (both support pgvector). See docs/deploy-render-neon.md.
+services:
+  - type: web
+    name: secure-rag-policy-engine
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health/readiness
+    envVars:
+      # Fit Spring Boot into the 512 MB free instance
+      - key: JAVA_TOOL_OPTIONS
+        value: "-XX:MaxRAMPercentage=65 -XX:+UseSerialGC -Xss512k -XX:ReservedCodeCacheSize=64m -XX:MaxMetaspaceSize=192m -XX:TieredStopAtLevel=1"
+      - key: AI_PROVIDER
+        value: openai
+      - key: EMBEDDING_DIMENSIONS
+        value: "1536"
+      - key: SEED_ENABLED
+        value: "true"
+      - key: JWT_SECRET
+        generateValue: true
+      # Filled in on the Render dashboard when you create the Blueprint
+      - key: DB_URL
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: DEMO_PASSWORD
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
